@@ -1,0 +1,34 @@
+{% extends 'index.html' %}
+
+{% block nav %}
+	<nav aria-label="breadcrumb">
+  		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="{{url('index')}}">Home</a></li>
+			<li class="breadcrumb-item"><a href="{{url('chain')}}">Chain</a></li>
+			<li class="breadcrumb-item active" aria-current="page">Post Document</li>
+			<li class="breadcrumb-item"><a href="{{url('nodes')}}">Node List</a></li>
+  		</ol>
+	</nav>
+{% endblock %}
+
+{% block content %}
+	<div class="row justify-content-center">
+		<div class="col-lg-8 col-md-8 col-sm-10 col-xs-2 card card-body">
+			<form action="{{url('new_document')}}" method=post accept-charset="utf-8" enctype="multipart/form-data">
+				<label for="user_id">Sender</label>
+				<input class="form-control" id="user_id" type="text" name="sender" value="{{user_id}}" readonly>
+				
+				<label for="recipient">Recipient</label>
+				<input class="form-control" id="recipient" type="text" name="recipient" placeholder="Readonly input here…">
+			
+				<div class="form-group">
+    					<label for="exampleFormControlFile1">Document input</label>
+    					<input type="file" class="form-control-file" name="document_data" value="" id="exampleFormControlFile1">
+  				</div>
+				<input type="submit" class="btn btn-primary" value="Send" /> 
+		
+			</form>
+		</div>
+	</div>
+{% endblock %}
+

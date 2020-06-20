@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block nav %}
+	<nav aria-label="breadcrumb">
+  		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="{{url('index')}}">Home</a></li>
+			<li class="breadcrumb-item"><a href="{{url('chain')}}">Chain</a></li>
+			<li class="breadcrumb-item"><a href="{{url('new_block')}}">Post Document</a></li>
+			<li class="breadcrumb-item active" aria-current="page">Node List</li>
+  		</ol>
+	</nav>
+{% endblock %}
+
+{% block content %}
+	{{ response.total_nodes }}
+{% endblock %}

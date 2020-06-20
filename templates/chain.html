@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+
+{% block newcss %}
+	<link rel='stylesheet' href='/static/css/style.css'>
+{% endblock %}
+
+{% block nav %}
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="{{url('index')}}">Home</a></li>
+			<li class="breadcrumb-item active" aria-current="page">Chain</li>
+			<li class="breadcrumb-item"><a href="{{url('new_block')}}">Post Document</a></li>
+			<li class="breadcrumb-item"><a href="{{url('nodes')}}">Node List</a></li>
+		</ol>
+	</nav>
+{% endblock %}
+
+{% block content %}
+	<p>Кол-во блоков: {{response.length - 1}}</p>
+	{% for resp in response.chain[-1:0:-1] %}
+		{% if current_user == resp.document[0].sender or current_user == resp.document[0].recipient %}
+		<div class="mystyle card">
+			{{resp.document[0].document_data}}
+  			<div class="card-header">
+				Номер блока: {{resp.index}}
+				<small id="time{{resp.timestamp}}" style="float: right"></small>
+  			</div>
+  			<div class="card-body">
+    				<h5 class="card-title">Отправитель: {{resp.document[0].sender}}</h5>
+    				<p class="card-text">Получатель: {{resp.document[0].recipient}}</p>
+				<p class="card-text">Док-во работы: {{resp.proof}}</p>
+				<p class="card-text">Хэш пред. блока: {{resp.previous_hash}}</p>
+
+    				<a href="#" class="btn btn-primary">Просмотр Документа</a>
+  			</div>
+		</div>
+		<br>
+		<script src="/static/js/script.js" type="text/javascript"></script>
+		<script>document.getElementById('time{{resp.timestamp}}').innerHTML = timestampToDate({{resp.timestamp}})</script>
+		{% endif %}
+	{% endfor %}
+
+{% endblock %}

@@ -12,7 +12,7 @@ from aiohttp import web
 from aiohttp_session import setup, get_session
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from config.common import BaseConfig
-from routes.base import setup_routes, setup_static_routes
+from routes.base import setup_routes, setup_api_routes, setup_static_routes
 
 
 parser = argparse.ArgumentParser(description = "blockchain project")
@@ -24,14 +24,15 @@ parser.add_argument("-c", "--config", type=argparse.FileType('r'), help="Path to
 
 args = parser.parse_args()
 
+#node_identifier = str(uuid4()).replace('-', '')
 
 async def current_user_ctx_proccessor(request):
     session = await get_session(request)
     user = None
     is_anonym = True
     if 'user' in session:
-        user_id = session['user']
-        user = await User.get_user_by_id(request.app['db'], user_id)
+        user = session['user']
+        #user = await User.get_user_by_id(request.app['db'], user_id)
         if user:
             is_anonym = not bool(user)
     return dict(current_user = user, is_anonym = is_anonym)
@@ -41,11 +42,10 @@ async def init_app():
     secret_key = base64.urlsafe_b64decode(BaseConfig.secret_key)
     setup(app, EncryptedCookieStorage(secret_key))
 
-    aiohttp_jinja2.setup(app, loader = jinja2.PackageLoader(package_name = "app", package_path = "templates"), context_processors = [current_user_ctx_proccessor]
-
-            )
+    aiohttp_jinja2.setup(app, loader = jinja2.PackageLoader(package_name = "app", package_path = "templates"), context_processors = [current_user_ctx_proccessor])
 
     setup_routes(app)
+    setup_api_routes(app)
     setup_static_routes(app)
 
     config = BaseConfig.load_config(args.config)

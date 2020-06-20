@@ -12,14 +12,15 @@ from pynat import get_ip_info
 
 
 class Blockchain(object):
+
     def __init__(self):
         self.chain = []
-        self.current_transaction = []
+        self.current_document = []
 
-        topology, ext_ip, ext_port = get_ip_info()
+        #topology, ext_ip, ext_port = get_ip_info()
         self.nodes = set()
-        self.nodes.add(ext_ip + ":" + str(ext_port))
-        print(self.nodes)
+        #self.nodes.add(ext_ip + ":" + str(ext_port))
+        #print(self.nodes)
 
         #Создание первого блока
         self.new_block(previous_hash = 1, proof = 100)
@@ -29,24 +30,24 @@ class Blockchain(object):
         block = {
                 "index": len(self.chain) + 1,
                 "timestamp": time(),
-                "transactions": self.current_transaction,
+                "document": self.current_document,
                 "proof": proof,
                 "previous_hash": previous_hash or self.hash(self.chain[-1]),
                 }
 
-        #Обновление текущего списка транзакций
-        self.current_transaction = [] 
+        #Обновление текущего списка отправленных документов
+        self.current_document = [] 
 
         self.chain.append(block)
         return block
 
-    def new_transaction(self, sender, recipient, amount):
+    def new_document(self, sender, recipient, document_data):
         #Добавление новой транзакции в список транзакций
 
-        self.current_transaction.append({
+        self.current_document.append({
             "sender": sender,
             "recipient": recipient,
-            "amount": amount
+            "document_data": document_data
             })
 
         return self.last_block['index'] + 1
@@ -82,8 +83,19 @@ class Blockchain(object):
         #Добавление нового узла
 
         parsed_url = urlparse(address)
-        self.nodes.add(parsed_url.netloc)
-        print(self.nodes)
+        ip_port = parsed_url.netloc
+        self.nodes.add(ip_port)
+        response = requests.get(f'http://{ip_port}/api/nodes/list')
+            
+        if response.status_code == 200:
+            nodes = response.json()['node']
+            for node in nodes:
+                if not node == "":
+                    ip = self.register_node("http://" + node)
+                    print(ip)
+                else:
+                    return 0
+
     
     def valid_chain(self, chain):
         #Проверка, является ли хэш в блоке верным
@@ -114,7 +126,7 @@ class Blockchain(object):
         max_length = len(self.chain)
 
         for nodes in neighbours:
-            response = requests.get(f'http://{nodes}/chain')
+            response = requests.get(f'http://{nodes}/api/chain')
             
             if response.status_code == 200:
                 length = response.json()['length']

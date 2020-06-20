@@ -1,1 +1,78 @@
-<h1>HI</h1>
+<!DOCTYPE html>
+<html>
+<head>
+	{% block title %}
+		<title>Main</title>
+	{% endblock %}
+	
+	{% block newcss %}
+	{% endblock %}
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+	<div class="container">
+		
+		{% block nav %}
+		<nav aria-label="breadcrumb">
+  			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page">Home</li>
+				<li class="breadcrumb-item"><a href="{{url('chain')}}">Chain</a></li>
+				<li class="breadcrumb-item"><a href="{{url('new_block')}}">Post Document</a></li>
+				<li class="breadcrumb-item"><a href="{{url('nodes')}}">Node List</a></li>
+  			</ol>
+		</nav>
+		{% endblock %}
+
+		{% block content %}
+			<div class="row">
+				<div class="col-5">
+					<div class="card">
+ 		 				<div class="card-body">
+							{% if current_user %}
+								Идентификатор Пользователя: {{user}}
+							{% else %}
+								<form action="{{ url('create_user') }}" method="post">
+									<label for="user_id">Создание идентификатора пользователя:</label>
+									<input id="user_id" class="btn btn-lg btn-primary btn-block" type="submit" value="Сгенерировать">
+								</form>
+	  						{%endif%}
+						</div>
+					</div>
+				</div>
+				<div class="col-7"> 
+					<div class="card" style="height: 168%">
+  						<div class="card-body">
+							<h5 class="card-title">Данные о пользователе</h5>
+							<h6 class="card-subtitle mb-2 text-muted">Отправленно док-ов: </h6>
+							<p class="card-text"><p>Принято док-во: </p>
+    							<a href="#" class="card-link">Входящие документы</a>
+  						</div>
+					</div>
+				</div>
+				<div class="col-5">
+					<div class="card" style="top: -30%;">
+						<div class="card-body">
+							<form action="{{ url('register_node') }}" method="post">
+								<div class="form-group">
+									<label for="id">Введите IP:PORT пользователя:</label>
+									<input class="form-control" type="text" id="ip" name="nodes" values="">
+								</div>
+								<input class="btn btn-primary" type="submit" value="Добавить node">	
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endblock %}
+
+	</div>
+
+</body>
+</html> 
