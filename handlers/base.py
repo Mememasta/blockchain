@@ -23,9 +23,23 @@ class Index(web.View):
         session = await get_session(self)
         print(session)
         user = {}
+        status = {}
         if 'user' in session:
+            send = 0
+            post = 0
             user = session['user']
-        return dict(user = user)
+            chain = str(blockchain.chain[1:]).replace("\'", "\"")
+            chains = json.loads(chain)
+            for chain in chains:
+                doc = chain["document"][0]
+                sender = doc['sender']
+                recipient = doc['recipient']
+                if sender == user:
+                    send = send + 1
+                elif recipient == user:
+                    post = post + 1
+            status = [send, post]
+        return dict(user = user, status = status)
     
     async def post(self):
         session = await get_session(self)
@@ -68,8 +82,11 @@ class NewDocument(web.View):
     @aiohttp_jinja2.template("create_document.html")
     async def get(self):
         session = await get_session(self)
-        user_id = session['user']
-        return dict(user_id=user_id)
+        if 'user' in session:
+            user_id = session['user']
+            return dict(user_id=user_id)
+
+        return redirect(self, 'index')
 
         
     async def post(self):

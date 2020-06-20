@@ -28,11 +28,11 @@ class Blockchain(object):
     def new_block(self, proof, previous_hash = None):
         #Создание нового блока и внесение в цепь
         block = {
-                "index": len(self.chain) + 1,
-                "timestamp": time(),
-                "document": self.current_document,
-                "proof": proof,
-                "previous_hash": previous_hash or self.hash(self.chain[-1]),
+                'index': len(self.chain) + 1,
+                'timestamp': time(),
+                'document': self.current_document,
+                'proof': proof,
+                'previous_hash': previous_hash or self.hash(self.chain[-1]),
                 }
 
         #Обновление текущего списка отправленных документов
@@ -45,9 +45,9 @@ class Blockchain(object):
         #Добавление новой транзакции в список транзакций
 
         self.current_document.append({
-            "sender": sender,
-            "recipient": recipient,
-            "document_data": document_data
+            'sender': sender,
+            'recipient': recipient,
+            'document_data': document_data
             })
 
         return self.last_block['index'] + 1

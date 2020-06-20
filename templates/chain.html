@@ -20,14 +20,14 @@
 	{% for resp in response.chain[-1:0:-1] %}
 		{% if current_user == resp.document[0].sender or current_user == resp.document[0].recipient %}
 		<div class="mystyle card">
-			{{resp.document[0].document_data}}
   			<div class="card-header">
-				Номер блока: {{resp.index}}
+				Номер блока: {{resp.index - 1}}
 				<small id="time{{resp.timestamp}}" style="float: right"></small>
   			</div>
   			<div class="card-body">
     				<h5 class="card-title">Отправитель: {{resp.document[0].sender}}</h5>
     				<p class="card-text">Получатель: {{resp.document[0].recipient}}</p>
+    				<p class="card-text">Название документа: {{resp.document[0].document_data}}</p>
 				<p class="card-text">Док-во работы: {{resp.proof}}</p>
 				<p class="card-text">Хэш пред. блока: {{resp.previous_hash}}</p>
 
