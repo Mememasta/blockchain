@@ -3,7 +3,7 @@ import hashlib
 import json
 import time
 
-from aiohttp import web
+from aiohttp import web, ClientSession
 from aiohttp_session import get_session
 from config.common import BaseConfig
 from textwrap import dedent
@@ -152,9 +152,19 @@ class RegisterNode:
     @aiohttp_jinja2.template('nodes.html')
     async def get(self):
         response = {}
+        status = []
         if blockchain.nodes:
+            for node in blockchain.nodes:
+                try:
+                    async with ClientSession() as session:
+                        async with session.get('http://{{ node }}/api/chain') as resp:
+                            if resp.status == 200:
+                                status.append("online")
+                except:
+                    status.append("offline")
             response = {
-                'total_nodes': list(blockchain.nodes)
+                "total_nodes": list(blockchain.nodes),
+                "status_nodes": status
             }
 
         return dict(response=response)
@@ -175,7 +185,6 @@ class RegisterNode:
             'total_nodes': list(blockchain.nodes)
         }
 
-        #return web.json_response(response)
         location = self.app.router['nodes'].url_for()
         return web.HTTPFound(location=location)
 
