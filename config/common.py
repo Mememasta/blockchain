@@ -15,6 +15,7 @@ class BaseConfig:
     
     PROJECT_ROOT = Path(__file__).parent.parent
     static_dir = str(PROJECT_ROOT / "static")
+    db_dir = str(PROJECT_ROOT / "database")
 
     def load_config(config_file = None):
         default_file = Path(__file__).parent.parent / 'config/config.yaml'

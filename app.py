@@ -64,6 +64,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     web.run_app(app, host = args.host, port = args.port)
 
+
 if __name__ == "__main__":
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     loop = asyncio.new_event_loop()

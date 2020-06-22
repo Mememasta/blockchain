@@ -2,20 +2,24 @@ import hashlib
 import json
 import requests
 import socket
+import os
 
 from time import time
 from uuid import uuid4
 from urllib.parse import urlparse
 from pynat import get_ip_info
-
+from config.common import BaseConfig
 
 
 
 class Blockchain(object):
 
     def __init__(self):
-        self.chain = []
-        self.current_document = []
+        with open(os.path.join(BaseConfig.db_dir + '/chain.json')) as f:
+            self.chain = json.load(f)["chain"]
+        
+        #self.chain = []
+        self.current_document = []        
 
         #topology, ext_ip, ext_port = get_ip_info()
         self.nodes = set()
@@ -23,7 +27,8 @@ class Blockchain(object):
         #print(self.nodes)
 
         #Создание первого блока
-        self.new_block(previous_hash = 1, proof = 100)
+        if self.chain == []:
+            self.new_block(previous_hash = 1, proof = 100)
 
     def new_block(self, proof, previous_hash = None):
         #Создание нового блока и внесение в цепь
@@ -39,6 +44,10 @@ class Blockchain(object):
         self.current_document = [] 
 
         self.chain.append(block)
+
+        with open(os.path.join(BaseConfig.db_dir + '/chain.json'), 'w') as f:
+            json.dump({"chain": self.chain}, f)
+
         return block
 
     def new_document(self, sender, recipient, document_data):
@@ -82,19 +91,9 @@ class Blockchain(object):
     def register_node(self, address):
         #Добавление нового узла
 
-        parsed_url = urlparse(address)
+        parsed_url = urlparse("http://" + address)
         ip_port = parsed_url.netloc
         self.nodes.add(ip_port)
-        response = requests.get(f'http://{ip_port}/api/nodes/list')
-            
-        if response.status_code == 200:
-            nodes = response.json()['node']
-            for node in nodes:
-                if not node == "":
-                    ip = self.register_node("http://" + node)
-                    print(ip)
-                else:
-                    return 0
 
     
     def valid_chain(self, chain):
@@ -126,9 +125,13 @@ class Blockchain(object):
         max_length = len(self.chain)
 
         for nodes in neighbours:
-            response = requests.get(f'http://{nodes}/api/chain')
-            
-            if response.status_code == 200:
+            try:
+                response = requests.get(f'http://{nodes}/api/chain')
+                status = response.status_code
+            except:
+                status = 404
+
+            if status == 200:
                 length = response.json()['length']
                 chain = response.json()['chain']
 
@@ -138,6 +141,8 @@ class Blockchain(object):
 
         if new_chain:
             self.chain = new_chain
+            with open(os.path.join(BaseConfig.db_dir + '/chain.json'), 'w') as f:
+                json.dump({"chain": self.chain})
             return True
 
         return False

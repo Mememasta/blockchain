@@ -17,9 +17,15 @@
 			<h3>Список найденных узлов:</h3>
 			<ul class="list-group">
 				{% for i in range(0, response.total_nodes|length) %}
-					<div class="alert alert-success" role="alert">
-						<li>{{ response.total_nodes[i] }}<span class="badge badge-secondary" style="float: right">{{response.status_nodes[i]}}</span></li>
-					</div>
+					{% if response.status_nodes[i] == "online" %}
+						<div class="alert alert-success" role="alert">
+							<li>{{ response.total_nodes[i] }}<span class="badge badge-secondary" style="float: right">{{response.status_nodes[i]}}</span></li>
+						</div>
+					{% else %}
+						<div class="alert alert-danger" role="alert">
+							<li>{{ response.total_nodes[i] }}<span class="badge badge-secondary" style="float: right">{{response.status_nodes[i]}}</span></li>
+						</div>
+					{% endif %}
 				{% endfor %}
 			</ul>
 	</div>

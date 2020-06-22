@@ -157,7 +157,7 @@ class RegisterNode:
             for node in blockchain.nodes:
                 try:
                     async with ClientSession() as session:
-                        async with session.get('http://{{ node }}/api/chain') as resp:
+                        async with session.get(f'http://{node}/api/chain') as resp:
                             if resp.status == 200:
                                 status.append("online")
                 except:
@@ -173,12 +173,23 @@ class RegisterNode:
         #values = await self.json()
         values = await self.post()
         nodes = []
-        nodes.append("http://" + values['nodes'])
+        nodes.append(values['nodes'])
         if nodes is None:
             return web.json_response({"Error": "Please supply a valid list of nodes"})
 
         for node in nodes:
-            blockchain.register_node(node)
+            if node != self.host:
+                blockchain.register_node(node)
+                try:
+                    async with ClientSession() as session:
+                        async with session.get(f'http://{node}/api/nodes/list') as resp:
+                            if resp.status == 200:
+                                ip = await resp.json()
+                                print(ip['node'])
+                                nodes.extend(ip['node'])
+                except:
+                    print('error')
+
 
         response = {
             'message': 'New nodes have been added',
