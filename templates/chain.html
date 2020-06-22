@@ -27,11 +27,11 @@
   			<div class="card-body">
     				<h5 class="card-title">Отправитель: {{resp.document[0].sender}}</h5>
     				<p class="card-text">Получатель: {{resp.document[0].recipient}}</p>
-    				<p class="card-text">Название документа: {{resp.document[0].document_data}}</p>
+    				<p class="card-text">Название документа: {{resp.document[0].document_data[0]}}</p>
 				<p class="card-text">Док-во работы: {{resp.proof}}</p>
 				<p class="card-text">Хэш пред. блока: {{resp.previous_hash}}</p>
 
-    				<a href="#" class="btn btn-primary">Просмотр Документа</a>
+				<a href="{{ url('view_document', id=resp.previous_hash) }}" class="btn btn-primary">Просмотр Документа</a>
   			</div>
 		</div>
 		<br>

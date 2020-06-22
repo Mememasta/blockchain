@@ -38,7 +38,7 @@ async def current_user_ctx_proccessor(request):
     return dict(current_user = user, is_anonym = is_anonym)
 
 async def init_app():
-    app = web.Application(debug=True)
+    app = web.Application(debug=True, client_max_size=1024**5)
     secret_key = base64.urlsafe_b64decode(BaseConfig.secret_key)
     setup(app, EncryptedCookieStorage(secret_key))
 

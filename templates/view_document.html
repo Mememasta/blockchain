@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 
 {% block content %}
-	<h3>HI</h3>
+	<h3>Название файла: {{ block.document[0].document_data[0] }}</h3>
+	<a href="data:{{block.document[0].document_data[1]}};base64,{{block.document[0].document_data[2]}}" download="{{ block.document[0].document_data[0] }}">Скачать файл</a>
 {% endblock %}

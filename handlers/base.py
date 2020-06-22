@@ -1,4 +1,5 @@
 import aiohttp_jinja2
+import base64
 import hashlib
 import json
 import time
@@ -101,7 +102,11 @@ class NewDocument(web.View):
             return web.Response(text="Missing values")
 
         if values['sender'] == user:
-            index = blockchain.new_document(values['sender'], values['recipient'], values['document_data'].filename)
+            file = [str(values['document_data'].filename), str(values['document_data'].content_type)]
+            print(file)
+            b64 = base64.b64encode(values['document_data'].file.read()).strip().decode('utf-8')
+            file.append(str(b64))
+            index = blockchain.new_document(values['sender'], values['recipient'], file)
 
             last_block = blockchain.last_block
             last_proof = last_block['proof']
@@ -129,10 +134,16 @@ class NewDocument(web.View):
         
         return redirect(self, 'new_block')
 
-#class ViewDocument:
-#
-#    @aiohttp_jinja2.template('view_document.html')
-#    async def get(self):
+class ViewDocument:
+
+    @aiohttp_jinja2.template('view_document.html')
+    async def get(self):
+        hash = self.match_info['id']
+        block = {}
+        for block in blockchain.chain[1:]:
+            hash_chain = block['previous_hash']
+            if hash == hash_chain:
+                return dict(block=block)
         
         
 
