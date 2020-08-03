@@ -1,0 +1,42 @@
+{% extends 'index.html' %}
+
+{% block nav %}
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<!-- <li class="breadcrumb-item"><a href="{{url('index')}}">Home</a></li> -->
+			<!-- <li class="breadcrumb-item"><a href="{{url('chain')}}">Chain</a></li> -->
+			<!-- <li class="breadcrumb-item"><a href="{{url('new_block')}}">Post Document</a></li> -->
+			<!-- <li class="breadcrumb-item"><a href="{{url('nodes')}}">Node List</a></li> -->
+      <li class="breadcrumb-item"><a href="{{url('signup')}}">Sign Up</a></li>
+			<li class="breadcrumb-item active">Log In</li>
+			<!-- <li class="breadcrumb-item"><a href="{{url('logout')}}">Log Out</a></li> -->
+
+		</ol>
+	</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card container form-signin" style="width: 50%; border-radius: 15px; margin-top: 10%;">
+	<div class="card-body">
+
+		<h3 class="card-title" align="center">Log In</h5>
+		<form action="{{ url('login_post') }}" class="form-signin" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="inputLogin">Login</label>
+				<input type="text" class="form-control" name="login" id="inputLogin" placeholder="Login" required autofocus>
+			</div>
+			<div class="form-group">
+				<label for="inputPassword"> Password </label>
+				<input type="password" name="password" class="form-control" id="inputPassword" placeholder="Пароль" required>
+			</div>
+			<div class="form-group">
+				<label for="inputKey"> Key </label>
+				<input type="text" name="user_key" class="form-control" id="inputKey" placeholder="Ключ" required>
+			</div>
+			<button type="submit" class="btn btn-primary btn-block">Log In</button>
+			<p>{{ error }}</p>
+			<p class="mt-5 mb-3 text-muted" align="center">&copy; 2020</p>
+		</form>
+	</div>
+</div>
+{% endblock%}

@@ -4,7 +4,7 @@
 	{% block title %}
 		<title>Main</title>
 	{% endblock %}
-	
+
 	{% block newcss %}
 	{% endblock %}
 
@@ -22,7 +22,7 @@
 
 <body>
 	<div class="container">
-		
+
 		{% block nav %}
 		<nav aria-label="breadcrumb">
   			<ol class="breadcrumb">
@@ -30,6 +30,7 @@
 				<li class="breadcrumb-item"><a href="{{url('chain')}}">Chain</a></li>
 				<li class="breadcrumb-item"><a href="{{url('new_block')}}">Post Document</a></li>
 				<li class="breadcrumb-item"><a href="{{url('nodes')}}">Node List</a></li>
+				<li class="breadcrumb-item"><a href="{{url('logout')}}">Log Out</a></li>
   			</ol>
 		</nav>
 		{% endblock %}
@@ -40,18 +41,14 @@
 					<div class="card">
  		 				<div class="card-body">
 							{% if current_user %}
-								Идентификатор Пользователя: {{user}}
-							{% else %}
-								<form action="{{ url('create_user') }}" method="post">
-									<label for="user_id">Создание идентификатора пользователя:</label>
-									<input id="user_id" class="btn btn-lg btn-primary btn-block" type="submit" value="Сгенерировать">
-								</form>
+								<p>Идентификатор Пользователя: {{user.key}}</p>
+								<p>Логин: {{user.login}}</p>
 	  						{%endif%}
 						</div>
 					</div>
 				</div>
 				{% if status %}
-					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12"> 
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 						<div class="card" style="">
 	  						<div class="card-body">
 								<h5 class="card-title">Данные о пользователе</h5>
@@ -73,7 +70,7 @@
 										<label for="id">Введите IP и PORT узла:</label>
 										<input class="form-control" type="text" id="ip" name="nodes" placeholder="localhost:5000" values="">
 									</div>
-									<input class="btn btn-primary" type="submit" value="Добавить узел">	
+									<input class="btn btn-primary" type="submit" value="Добавить узел">
 								</form>
 							</div>
 						</div>
@@ -85,4 +82,4 @@
 	</div>
 
 </body>
-</html> 
+</html>

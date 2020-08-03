@@ -4,15 +4,94 @@ import json
 
 from aiohttp import web
 from aiohttp_session import get_session
+from aiohttp_security import remember, forget, authorized_userid
 from config.common import BaseConfig
+from database.users import User
+from security import generate_password_hash, generate_key, check_password_hash
 from time import time
 from textwrap import dedent
 from uuid import uuid4
 from .base import blockchain
 
-node_identifier = str(uuid4()).replace('-', '')
+node_identifier = generate_key('-', '')
 
 
+class ApiRegister:
+
+    async def post(self):
+        data = await self.json()
+
+        required = ['login', 'password']
+        if not all(key in data for key in required):
+            return web.json_response({"status": "error", "error": "Missing values"})
+
+        user_key = User.get_user_by_key(self.app['db'], node_identifier)
+
+        if not user_key:
+            password_hash = generate_password_hash(data['password'])
+            create_user = await User.create_user(self.app['db'], node_identifier, data['login'], password_hash)
+
+            response = {
+                "status": "User created",
+                "key": node_identifier,
+                "login": data['login']
+            }
+            return web.json_response(response)
+        else:
+            return web.json_response({"error": "User already exists"})
+
+class ApiLogin:
+
+    async def post(self):
+        data = await self.json()
+
+        required = ['key', 'login', 'password']
+        if not all(key in data for key in required):
+            return web.json_response({"status": "error", "error": "Missing values"})
+
+        session = await get_session(self)
+        user = await User.get_user_by_key(self.app['db'], data['key'])
+        if user and user['login'] == data['login'] and check_password_hash(data['password'], user['password']):
+            session['user'] = dict(user)
+            response = {
+                "status": "ok",
+                "login": data['login']
+            }
+            # await remember(self, response, user['key'])
+        else:
+            response = {
+                "status": "error",
+                "error": "Incorrect login or password"
+            }
+
+        return web.json_response(response)
+
+class ApiLogout:
+
+    async def get(self):
+        session = await get_session(self)
+
+        if 'user' in session:
+            del session['user']
+            del session['user_key']
+
+        response = {"status": "ok"}
+
+        # await forget(self, response)
+
+        return web.json_response(response)
+
+class ApiUsers:
+
+    async def get(self):
+        all_user = await User.get_all_users(self.app['db'])
+        all_list = [dict(row) for row in all_user]
+        response = {
+            "users": all_list,
+            "length": len(all_list)
+        }
+
+        return web.json_response(response)
 
 class ApiMine:
 
@@ -25,7 +104,7 @@ class ApiMine:
                 sender = "0",
                 recipient = node_identifier,
                 document_data = 1
-                
+
                 )
 
         previous_hash = blockchain.hash(last_block)
@@ -64,7 +143,7 @@ class ApiNewDocument:
         return web.json_response(response)
 
 class ApiFullChain:
-    
+
     async def get(self):
         response = {
                 'chain': blockchain.chain,
@@ -76,7 +155,7 @@ class ApiRegisterNode:
 
     async def get(self):
         response = {
-            'node': list(blockchain.nodes)    
+            'node': list(blockchain.nodes)
         }
 
         return web.json_response(response)

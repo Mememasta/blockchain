@@ -11,6 +11,7 @@
 			<li class="breadcrumb-item active" aria-current="page">Chain</li>
 			<li class="breadcrumb-item"><a href="{{url('new_block')}}">Post Document</a></li>
 			<li class="breadcrumb-item"><a href="{{url('nodes')}}">Node List</a></li>
+			<li class="breadcrumb-item"><a href="{{url('logout')}}">Log Out</a></li>
 		</ol>
 	</nav>
 {% endblock %}
@@ -18,7 +19,7 @@
 {% block content %}
 	<p>Кол-во блоков: {{response.length - 1}}</p>
 	{% for resp in response.chain[-1:0:-1] %}
-		{% if current_user == resp.document[0].sender or current_user == resp.document[0].recipient %}
+		{% if current_user.key == resp.document[0].sender or current_user.key == resp.document[0].recipient %}
 		<div class="mystyle card">
   			<div class="card-header">
 				Номер блока: {{resp.index - 1}}

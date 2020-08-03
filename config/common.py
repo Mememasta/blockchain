@@ -1,5 +1,5 @@
 from pathlib import Path
-import yaml
+import pytoml as toml
 from aiohttp import web
 
 def redirect(request, name, **kw):
@@ -12,21 +12,17 @@ class BaseConfig:
     debug = True
     app_name = "BlockChain"
     secret_key = b'TyzLMReLCWUiPsTFMActw_0dtEU7kAcFXHNYYm64DNI='
-    
+
     PROJECT_ROOT = Path(__file__).parent.parent
     static_dir = str(PROJECT_ROOT / "static")
     db_dir = str(PROJECT_ROOT / "database")
 
-    def load_config(config_file = None):
-        default_file = Path(__file__).parent.parent / 'config/config.yaml'
-        with open(default_file, 'r') as f:
-            config = yaml.safe_load(f)
+    def load_config(path = None):
+        if path != None:
+            path = Path(__file__).parent.parent / path
+        else:
+            path = Path(__file__).parent.parent / 'config/user_config.toml'
 
-        cf_dict = {}
-        if config_file:
-            cf_dict = yaml.safe_load(config_file)
-
-        config.update(**cf_dict)
-
-        return config
-
+        with open(path) as f:
+            conf = toml.load(f)
+        return conf

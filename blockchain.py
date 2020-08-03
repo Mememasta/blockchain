@@ -141,7 +141,7 @@ class Blockchain(object):
 
         if new_chain:
             self.chain = new_chain
-            with open(os.path.join(BaseConfig.db_dir + '/chain.json'), 'w') as f:
+            with open(os.path.join(BaseConfig.db_dir + '/chain.json'), 'w'):
                 json.dump({"chain": self.chain})
             return True
 

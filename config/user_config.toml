@@ -1,0 +1,8 @@
+[database]
+
+DB_HOST = 'localhost'
+DB_PORT = 5432
+
+DB_NAME = 'blockchain'
+DB_USER = 'block_user'
+DB_PASS = 'block_user'
