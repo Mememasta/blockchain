@@ -17,7 +17,7 @@ pycparser==2.20
 pyjson==1.3.0
 pynat==0.6.2
 pySocket==0.35
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.23.0
 six==1.15.0
 urllib3==1.25.9
